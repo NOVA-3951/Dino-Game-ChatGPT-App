@@ -1,0 +1,16 @@
+runtime: "container"
+build:
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
+startCommand:
+  type: "http"
+  configSchema:
+    type: "object"
+    properties:
+      difficulty:
+        type: "string"
+        enum: ["easy", "normal", "hard"]
+        description: "Default game difficulty level"
+        default: "normal"
+  exampleConfig:
+    difficulty: "normal"
