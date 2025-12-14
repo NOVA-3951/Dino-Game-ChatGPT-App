@@ -73,15 +73,22 @@ server.tool(
           type: "text" as const,
           text: `Here's the dinosaur game! Press SPACE or tap to jump. Difficulty: ${difficulty}. The game speeds up as you score more points. Good luck!`,
         },
-        {
-          type: "resource" as const,
-          resource: {
-            uri: "ui://widget/dino-game.html",
-            mimeType: "text/html+skybridge",
-            text: getWidgetHTML(),
-          },
-        },
       ],
+      structuredContent: {
+        game: "Chrome Dinosaur Runner",
+        difficulty,
+        instructions: "Press SPACE or tap to make the dinosaur jump over cacti",
+        controls: ["SPACE", "UP_ARROW", "TAP"],
+      },
+      _meta: {
+        "openai/outputTemplate": "ui://widget/dino-game.html",
+        "openai/toolInvocation/invoking": "Loading dinosaur game...",
+        "openai/toolInvocation/invoked": "Game ready! Press SPACE to jump.",
+        gameSettings: {
+          difficulty,
+          initialSpeed: difficulty === "easy" ? 4 : difficulty === "hard" ? 7 : 5,
+        },
+      },
     };
   }
 );
