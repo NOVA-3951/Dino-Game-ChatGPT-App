@@ -15,10 +15,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "DinoChat App"
+args = "Dino MCP Server"
 
 [[workflows.workflow]]
-name = "DinoChat App"
+name = "Dino MCP Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
