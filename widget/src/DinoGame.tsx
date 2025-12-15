@@ -7,19 +7,37 @@ const GRAVITY = 0.8
 const JUMP_FORCE = -13
 const INITIAL_SPEED = 5
 
-interface GameState {
-  highScore: number
-  gamesPlayed: number
+interface WidgetState {
+  highScore?: number
+  gamesPlayed?: number
+}
+
+interface ToolOutput {
+  structuredContent?: {
+    difficulty?: string
+    instructions?: string
+    controls?: string[]
+  }
+  _meta?: {
+    gameSettings?: {
+      difficulty?: string
+      initialSpeed?: number
+    }
+  }
 }
 
 function DinoGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  
+  const toolOutput = window.openai?.toolOutput as ToolOutput | undefined
+  const initialSpeed = toolOutput?._meta?.gameSettings?.initialSpeed || INITIAL_SPEED
+  
   const gameRef = useRef({
     dino: { x: 50, y: GROUND_Y - 44, width: 44, height: 44, velocityY: 0, isJumping: false },
     obstacles: [] as Array<{ x: number; width: number; height: number }>,
     score: 0,
     highScore: 0,
-    speed: INITIAL_SPEED,
+    speed: initialSpeed,
     isGameOver: false,
     isRunning: false,
     frameCount: 0
@@ -28,9 +46,10 @@ function DinoGame() {
   const [currentScore, setCurrentScore] = useState(0)
   const [highScore, setHighScore] = useState(0)
   const [isGameOver, setIsGameOver] = useState(false)
+  const [difficulty, setDifficulty] = useState(toolOutput?.structuredContent?.difficulty || 'normal')
 
   useEffect(() => {
-    const widgetState = window.openai?.widgetState as GameState | undefined
+    const widgetState = window.openai?.widgetState as WidgetState | undefined
     if (widgetState?.highScore) {
       gameRef.current.highScore = widgetState.highScore
       setHighScore(widgetState.highScore)
@@ -249,6 +268,9 @@ function DinoGame() {
       <div className="game-header">
         <span className="dino-icon">🦖</span>
         <span className="game-title">Dino Runner</span>
+        {difficulty !== 'normal' && (
+          <span className="difficulty-badge">{difficulty}</span>
+        )}
       </div>
       <canvas
         ref={canvasRef}
